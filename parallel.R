@@ -16,7 +16,7 @@
 
 # The task ----------------------------------------------------------------
 
-<- "output"
+output <- "output"
 
 get_map <- function(raster, shape){
   p_rast <- terra::crop(raster, shape, snap = "out")
