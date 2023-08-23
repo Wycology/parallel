@@ -16,13 +16,13 @@
 
 # The task ----------------------------------------------------------------
 
-output <- "output"
+dir.create("output") # Creates a folder called output in the working directory
 
-get_map <- function(raster, shape){
-  p_rast <- terra::crop(raster, shape, snap = "out")
-  p_rast <- terra::mask(p_rast, shape)
-  p_rast <- sum(p_rast)
-  return(p_rast)
+get_map <- function(raster, shape){ # A function that takes two arguments
+  p_rast <- terra::crop(raster, shape, snap = "out") # Crops raster using shape
+  p_rast <- terra::mask(p_rast, shape) # Masks raster using shape
+  p_rast <- sum(p_rast) # Sums cell wise all months in the cropped raster
+  return(p_rast) # Keeps the raster with annual rainfall per pixel
 }
 
 cores <- detectCores() - 1
