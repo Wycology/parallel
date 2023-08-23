@@ -14,9 +14,15 @@
 
 # Here we show how loop, do, and dopar can help achieve these.
 
+# Libraries ---------------------------------------------------------------
+
+pacman::p_load(doParallel, parallel, terra)
+
 # The task ----------------------------------------------------------------
 
 dir.create("output") # Creates a folder called output in the working directory
+
+# Creating the function to do the task ------------------------------------
 
 get_map <- function(raster, shape){ # A function that takes two arguments
   p_rast <- terra::crop(raster, shape, snap = "out") # Crops raster using shape
@@ -37,24 +43,7 @@ system.time( # This is to time how long the process will take
     writeRaster(r, n, overwrite = T) # Writes the raster for the country to disk
   })
 
-cores <- detectCores() - 1 # Spares one core from the available cores
-registerDoParallel(cores) # Initiates the cores for use in parallel computation
-
-system.time(
-  foreach(i = 1:nrow(countries),.packages = "terra") %dopar% {
-    rst <- terra::rast(chirps_files)
-    countries <- vect(shape_path)
-    countries <- countries[which(countries$DISP_AREA == "NO"),]
-    r  <- get_map(raster = rst, shape = countries[i,])
-    n  <- countries[i,]$Name_label
-    n  <- paste0(output,"/", n,".tif")
-    writeRaster(r, n, overwrite = TRUE)
-  })
-
-stopImplicitCluster()
-
-
-# This do also works fine -------------------------------------------------
+# Using do ----------------------------------------------------------------
 
 cores <- detectCores() - 1
 registerDoParallel(cores = cores)
@@ -73,3 +62,18 @@ system.time(
 
 stopImplicitCluster()
 
+cores <- detectCores() - 1 # Spares one core from the available cores
+registerDoParallel(cores) # Initiates the cores for use in parallel computation
+
+system.time(
+  foreach(i = 1:nrow(countries),.packages = "terra") %dopar% {
+    rst <- terra::rast(chirps_files)
+    countries <- vect(shape_path)
+    countries <- countries[which(countries$DISP_AREA == "NO"),]
+    r  <- get_map(raster = rst, shape = countries[i,])
+    n  <- countries[i,]$Name_label
+    n  <- paste0(output,"/", n,".tif")
+    writeRaster(r, n, overwrite = TRUE)
+  })
+
+stopImplicitCluster()
