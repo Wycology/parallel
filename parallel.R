@@ -45,25 +45,22 @@ system.time( # This is to time how long the process will take
 
 # Using do ----------------------------------------------------------------
 
-cores <- detectCores() - 1
-registerDoParallel(cores = cores)
+cores <- detectCores() - 1          # Spares one core from the available cores
+registerDoParallel(cores = cores)   # Initiates the cores for use in parallel computation
 
 system.time(
   foreach(i = 1:nrow(countries), .packages = "terra") %do% {
-    
     countries <- countries[which(countries$DISP_AREA == "NO"),]
     r <- get_map(raster = chirps, shape = countries[i,])
     n <- countries[i,]$Name_label
     n <- paste0("output/", n, ".tif")
-    
     writeRaster(r, n, overwrite = TRUE)
-    
   })
 
 stopImplicitCluster()
 
-cores <- detectCores() - 1 # Spares one core from the available cores
-registerDoParallel(cores) # Initiates the cores for use in parallel computation
+cores <- detectCores() - 1 
+registerDoParallel(cores) 
 
 system.time(
   foreach(i = 1:nrow(countries),.packages = "terra") %dopar% {
