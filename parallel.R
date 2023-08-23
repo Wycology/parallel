@@ -25,8 +25,20 @@ get_map <- function(raster, shape){ # A function that takes two arguments
   return(p_rast) # Keeps the raster with annual rainfall per pixel
 }
 
-cores <- detectCores() - 1
-registerDoParallel(cores)
+# Using the basic for loop ------------------------------------------------
+
+system.time( # This is to time how long the process will take
+  for(i in 1:nrow(countries)){ # 1 to number of countries in the multipolygon
+    countries <- countries[which(countries$DISP_AREA == "NO"),] # Takes clean countries
+    r <- get_map(raster = chirps, # Takes the raster stack
+                 shape = countries[i,]) # Crops it by each country polygon
+    n <- countries[i,]$Name_label # Picks the name of the country
+    n <- paste0("output/", n, ".tif") # Adds to output path the name of country and .tif
+    writeRaster(r, n, overwrite = T) # Writes the raster for the country to disk
+  })
+
+cores <- detectCores() - 1 # Spares one core from the available cores
+registerDoParallel(cores) # Initiates the cores for use in parallel computation
 
 system.time(
   foreach(i = 1:nrow(countries),.packages = "terra") %dopar% {
@@ -41,16 +53,6 @@ system.time(
 
 stopImplicitCluster()
 
-# This for loop works fine ------------------------------------------------
-
-system.time(
-  for(i in 1:nrow(countries)){
-    r <- get_map(raster = chirps, shape = countries[i,])
-    countries <- countries[which(countries$DISP_AREA == "NO"),]
-    n <- countries[i,]$Name_label
-    n <- paste0("output/", n, ".tif")
-    writeRaster(r, n, overwrite = T)
-  })
 
 # This do also works fine -------------------------------------------------
 
