@@ -53,7 +53,7 @@ system.time( # Checking on time
     countries <- countries[which(countries$DISP_AREA == "NO"),]
     r <- get_map(raster = chirps, shape = countries[i,])
     n <- countries[i,]$Name_label # Picking the variable for naming outputs
-    n <- paste0("output/", n, ".tif")
+    n <- paste0("output/", n, ".tif") # Specifying path
     writeRaster(r, n, overwrite = TRUE)
   })
 
