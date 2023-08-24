@@ -52,7 +52,7 @@ system.time( # Checking on time
   foreach(i = 1:nrow(countries), .packages = "terra") %do% { # Setting stage
     countries <- countries[which(countries$DISP_AREA == "NO"),]
     r <- get_map(raster = chirps, shape = countries[i,])
-    n <- countries[i,]$Name_label
+    n <- countries[i,]$Name_label # Picking 
     n <- paste0("output/", n, ".tif")
     writeRaster(r, n, overwrite = TRUE)
   })
