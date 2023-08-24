@@ -49,7 +49,7 @@ cores <- detectCores() - 1          # Spares one core from the available cores
 registerDoParallel(cores = cores)   # Initiates the cores for use in parallel computation
 
 system.time( # Checking on time
-  foreach(i = 1:nrow(countries), .packages = "terra") %do% {
+  foreach(i = 1:nrow(countries), .packages = "terra") %do% { # Setting stage
     countries <- countries[which(countries$DISP_AREA == "NO"),]
     r <- get_map(raster = chirps, shape = countries[i,])
     n <- countries[i,]$Name_label
