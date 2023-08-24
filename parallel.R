@@ -48,7 +48,7 @@ system.time( # This is to time how long the process will take
 cores <- detectCores() - 1          # Spares one core from the available cores
 registerDoParallel(cores = cores)   # Initiates the cores for use in parallel computation
 
-system.time(
+system.time( # Checking on time
   foreach(i = 1:nrow(countries), .packages = "terra") %do% {
     countries <- countries[which(countries$DISP_AREA == "NO"),]
     r <- get_map(raster = chirps, shape = countries[i,])
