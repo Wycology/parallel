@@ -54,7 +54,7 @@ system.time( # Checking on time
     r <- get_map(raster = chirps, shape = countries[i,])
     n <- countries[i,]$Name_label # Picking the variable for naming outputs
     n <- paste0("output/", n, ".tif") # Specifying path name and file extension
-    writeRaster(r, n, overwrite = TRUE)
+    writeRaster(r, n, overwrite = TRUE) # Writing each output raster to disk
   })
 
 stopImplicitCluster()
